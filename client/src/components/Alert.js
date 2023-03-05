@@ -5,7 +5,6 @@ const Alert = () => {
     const { alertText, alertType, hideAlert } = useMyContext()
 
     useEffect(() => {
-        console.log('infinite loop check')
         const timeout = setTimeout(hideAlert, 2000)
         return () => {
             clearTimeout(timeout)

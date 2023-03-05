@@ -62,7 +62,7 @@ export const AppProvider = ({ children }) => {
             return res
         },
         (error) => {
-            console.log(error.response)
+
             if (error.response.status === 401) {
                 logoutUser()
             }
@@ -168,13 +168,12 @@ export const AppProvider = ({ children }) => {
             const { data } = await authFetch.get(url)
             dispatch({ type: GET_JOBS_SUCCESS, payload: data })
         } catch (error) {
-            console.log(error.response)
-            // logoutUser()
+            // console.log(error.response)
+            logoutUser()
         }
     }
 
     const setEditJob = (id) => {
-        console.log(`set edit job ${id}`)
         dispatch({ type: SET_EDIT_JOB, payload: { id } })
     }
 
@@ -197,8 +196,8 @@ export const AppProvider = ({ children }) => {
             await authFetch.delete(`/jobs/${id}`)
             getAllJobs()
         } catch (error) {
-            console.log(error.response)
-            // logoutUser()
+            // console.log(error.response)
+            logoutUser()
         }
     }
 
