@@ -51,7 +51,7 @@ const AddJobs = () => {
                         <FormRowSelect name='jobType' labelText='Job Type' options={selectOptions.type} value={jobType} handleChange={handleJobInput} />
 
                         <div className='btn-div'>
-                            <button type='submit' className='btn btn-submit' onClick={handleSubmit} disabled={isLoading}>submit</button>
+                            <button type='submit' className='btn btn-submit' onClick={handleSubmit} disabled={isLoading}>{isLoading ? 'Creating job...' : 'submit'}</button>
                             <button className='btn clear-btn' type='button' onClick={clearForm}>clear</button>
                         </div>
 
