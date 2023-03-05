@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { FormRow, FormRowSelect, JobsContainer } from '../../components'
 import { useMyContext } from '../../context/AppContext'
@@ -11,10 +11,20 @@ const selectOptions = {
 
 const AllJobs = () => {
     const { getAllJobs, search, handleChange, sort, queryStatus, queryType } = useMyContext()
+    const [localSearch, setLocalSearch] = useState('')
 
-    React.useEffect(() => {
-        getAllJobs()
-    }, [search, sort, queryStatus, queryType])
+    const debounce = () => {
+        let timeoutID;
+        return (e) => {
+            setLocalSearch(e.target.value);
+            clearTimeout(timeoutID);
+            timeoutID = setTimeout(() => {
+                handleChange({ name: e.target.name, value: e.target.value });
+            }, 1000);
+        };
+    };
+    const optimizedDebounce = React.useMemo(() => debounce(), []);
+
 
     const handleInput = (e) => {
         const name = e.target.name
@@ -22,13 +32,17 @@ const AllJobs = () => {
         handleChange({ name, value })
     }
 
+    React.useEffect(() => {
+        getAllJobs()
+    }, [search, sort, queryStatus, queryType])
+
     return (
         <Wrapper>
             <section className='search-form'>
                 <form>
                     <h4>Search Form</h4>
                     <div className='form-center'>
-                        <FormRow labelText='Search' type='text' name='search' value={search} handleChange={handleInput} />
+                        <FormRow labelText='Search' type='text' name='search' value={localSearch} handleChange={optimizedDebounce} />
                         <FormRowSelect name='queryStatus' labelText='Status' options={selectOptions.status} value={queryStatus} handleChange={handleInput} />
                         <FormRowSelect name='queryType' labelText='Type' options={selectOptions.type} value={queryType} handleChange={handleInput} />
                         <FormRowSelect name='sort' labelText='Sort' options={selectOptions.sort} value={sort} handleChange={handleInput} />
@@ -36,17 +50,6 @@ const AllJobs = () => {
                     </div>
                 </form>
             </section>
-
-            {/* <section className='job-section'>
-                <h5>{!isLoading && `${totalJobs} jobs found`}</h5>
-                {isLoading ? <div className='loading-container'>
-                    <Loading />
-                </div> :
-                    <div className='job-container'>
-                        < RenderAllJobs />
-                    </div>
-                }
-            </section> */}
             <JobsContainer />
         </Wrapper>
     )
